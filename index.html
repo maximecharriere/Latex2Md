@@ -1,23 +1,28 @@
-<label for="input">LaTeX equation: </label>
-<br><textarea rows="10" cols="50" name="input"></textarea>
-<br>
-<label for="bgColor">Background Color</label>
-<input onchange="showHideBgColor(this)" type="checkbox" name="bgSetColor">
-<input style="display: none;" type="color" name="bgColor" value="#ffffff">
-
-<br><br>
-
-<button onClick="toGithubRenderURL()">Encode to Github render URL</button>
-<br><br>
-
-<label for="output">The URL is: </label>
-<input type="url" name="output" style="width:95%;">
-<br><button onclick="copyToClipboard()">Copy</button>
-<br><br>
-
-<label for="result">The result is: </label>
-<p id="result"></p>
-
+<div>
+    <h2>Latex2Md Render</h2>
+    <div>
+        <label for="input">LaTeX equation: </label><br>
+        <textarea rows="10" cols="50" name="input"></textarea><br>
+        <label for="bgColor">Background Color</label>
+        <input onchange="showHideBgColor(this)" type="checkbox" name="bgSetColor">
+        <input style="display: none;" type="color" name="bgColor" value="#ffffff"><br>
+        <button style="background-color: lightgreen;" onClick="toGithubRenderURL()">Encode to a Github render URL</button><br><br>
+    </div>
+    <div>
+        <label for="output">The URL is: </label>
+        <input type="url" name="output" style="width:95%;"><br>
+        <button onclick="copyToClipboard()">Copy</button><br><br>
+        <label for="result">The result is: </label>
+        <p id="result"></p>
+    </div>
+</div>
+<div>
+    <h2>How to use it</h2>
+    Github doesn't render LaTeX equations in markdown. So .md files or comments 
+    in <b>issue</b>, <b>pull request</b> and <b>gist</b> will not display equations as you would like. <br>
+    However, GitHub support the equations in Jupyter Notebooks preview.
+</div>
+<!-- JavaScript -->
 <script>
     function toGithubRenderURL() {
         var input = document.getElementsByName('input')[0].value;
