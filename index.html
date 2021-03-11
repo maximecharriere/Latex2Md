@@ -1,0 +1,46 @@
+<label for="input">LaTeX equation: </label>
+<br><textarea rows="10" cols="50" name="input"></textarea>
+<br>
+<label for="bgColor">Background Color</label>
+<input onchange="showHideBgColor(this)" type="checkbox" name="bgSetColor">
+<input style="display: none;" type="color" name="bgColor" value="#ffffff">
+
+<br><br>
+
+<button onClick="toGithubRenderURL()">Encode to Github render URL</button>
+<br><br>
+
+<label for="output">The URL is: </label>
+<input type="url" name="output" style="width:95%;">
+<br><button onclick="copyToClipboard()">Copy</button>
+<br><br>
+
+<label for="result">The result is: </label>
+<p id="result"></p>
+
+<script>
+    function toGithubRenderURL() {
+        var input = document.getElementsByName('input')[0].value;
+        var bgSetColor = document.getElementsByName('bgSetColor')[0].checked;
+        var bgColor = document.getElementsByName('bgColor')[0].value;
+
+        var output = '<img' + (bgSetColor ? ' style="background-color: ' + bgColor + ';"' : '') + ' src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle%20' + encodeURIComponent(input) + '" alt="' + input + '">';
+        document.getElementsByName('output')[0].value = output;
+        document.getElementById('result').innerHTML = output;
+    }
+
+    function copyToClipboard() {
+        var output = document.getElementsByName('output')[0];
+        output.select();
+        document.execCommand("copy");
+    }
+
+    function showHideBgColor(that) {
+        if (that.checked) {
+            document.getElementsByName("bgColor")[0].style.display = "block";
+        }
+        else {
+            document.getElementsByName("bgColor")[0].style.display = "none";
+        }
+    }
+</script>
