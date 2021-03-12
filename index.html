@@ -1,26 +1,59 @@
 <div>
-    <h2>Latex2Md Render</h2>
+    <h2>Latex2Md URL Generator</h2>
+    <h4>Generate LaTeX equations with the official GitHub renderer. </h4>
     <div>
         <label for="input">LaTeX equation: </label><br>
         <textarea rows="10" cols="50" name="input"></textarea><br>
+        <label for="inlineStyle">Inline style</label>
+        <input type="checkbox" name="inlineStyle"><br>
         <label for="bgColor">Background Color</label>
         <input onchange="showHideBgColor(this)" type="checkbox" name="bgSetColor">
         <input style="display: none;" type="color" name="bgColor" value="#ffffff"><br>
-        <button style="background-color: lightgreen;" onClick="toGithubRenderURL()">Encode to a Github render URL</button><br><br>
+        <button style="background-color: lightgreen;" onClick="toGithubRenderURL()">Encode to a Github renderer
+            URL</button><br><br>
     </div>
     <div>
-        <label for="output">The URL is: </label>
-        <input type="url" name="output" style="width:95%;"><br>
-        <button onclick="copyToClipboard()">Copy</button><br><br>
+        <div><label for="htmlOutput">HTML syntax: </label>
+            <input type="url" name="htmlOutput" style="width:95%;"><br>
+            <button onclick="copyToClipboard('htmlOutput')">Copy</button><br><br>
+        </div>
+        <div><label for="mdOutput">Markdown syntax: </label>
+            <input type="url" name="mdOutput" style="width:95%;"><br>
+            <button onclick="copyToClipboard('mdOutput')">Copy</button><br><br>
+        </div>
+    </div>
+    <div>
+
         <label for="result">The result is: </label>
         <p id="result"></p>
     </div>
 </div>
 <div>
     <h2>How to use it</h2>
-    Github doesn't render LaTeX equations in markdown. So .md files or comments 
-    in <b>issue</b>, <b>pull request</b> and <b>gist</b> will not display equations as you would like. <br>
+    Github doesn't render LaTeX equations in markdown. So equations in <b>.md</b> files or comments
+    in <b>issue</b>, <b>pull request</b> and <b>gist</b> will not be displayed as you would like. <br>
     However, GitHub support the equations in Jupyter Notebooks preview.
+    See <a href="https://github.com/maximecharriere/Latex2Md/blob/main/equations.ipynb">Jupyter Notebooks Examples</a>.
+    <br>
+    Looking for how GitHub renders equations in Jupyter Notebooks, we see that the following link is called: <br>
+    <p style="text-align: center;"><i><a
+                href="https://render.githubusercontent.com/render/math?math=err=\sum_{i=1}^N\omega_i\|p_i%27-q_i\|^2">https://render.githubusercontent.com/render/math?math=<b>&lt;LATEX
+                    EQUATION></b></a></i></p>
+    This link return a .svg image, so we can use it as an image source in our Github Markdown. <br>
+    However, some characters in the equation cannot be written directly in the URL.
+    New browsers interpret most characters correctly, but some characters
+    like the "+" must still be replaced by their HTML code. <br>
+    The URL generator on this website automaticaly replaces all characters not
+    correctly interpreted by new and old browsers. The URL will be longer and less understandable, but more
+    compatible.<br><br>
+    It is recommended to use the HTML syntax because it is more compatible, 
+    produces fewer errors and takes into account the background color. 
+</div>
+<div>
+    <h2>Credit</h2>
+    <a href="https://gist.github.com/a-rodin/fef3f543412d6e1ec5b6cf55bf197d7b">A hack for showing LaTeX formulas in
+        GitHub markdown.md</a> gist by <b>
+        a-rodin</b>.
 </div>
 <!-- JavaScript -->
 <script>
@@ -28,14 +61,20 @@
         var input = document.getElementsByName('input')[0].value;
         var bgSetColor = document.getElementsByName('bgSetColor')[0].checked;
         var bgColor = document.getElementsByName('bgColor')[0].value;
+        var inlineStyle = document.getElementsByName('inlineStyle')[0].checked;
 
-        var output = '<img' + (bgSetColor ? ' style="background-color: ' + bgColor + ';"' : '') + ' src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle%20' + encodeURIComponent(input) + '" alt="' + input + '">';
-        document.getElementsByName('output')[0].value = output;
-        document.getElementById('result').innerHTML = output;
+        var url = 'https://render.githubusercontent.com/render/math?math=' + (inlineStyle ? '' : '%5Cdisplaystyle%20') + encodeURIComponent(input);
+
+        var htmlOutput = '<img' + (bgSetColor ? ' style="background-color: ' + bgColor + ';"' : '') + ' src="' + url + '" alt="' + input + '">';
+        var mdOutput = '![' + input + '](' + url + ')';
+
+        document.getElementsByName('htmlOutput')[0].value = htmlOutput;
+        document.getElementsByName('mdOutput')[0].value = mdOutput;
+        document.getElementById('result').innerHTML = htmlOutput;
     }
 
-    function copyToClipboard() {
-        var output = document.getElementsByName('output')[0];
+    function copyToClipboard(textboxName) {
+        var output = document.getElementsByName(textboxName)[0];
         output.select();
         document.execCommand("copy");
     }
